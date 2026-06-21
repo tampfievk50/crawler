@@ -1,0 +1,26 @@
+use std::sync::Arc;
+
+use sea_orm::DatabaseConnection;
+
+use crate::state::AppState::AppState;
+use crawler_dataaccess::download::adapter::DownloadRepositoryImpl::DownloadRepositoryImpl;
+use crawler_dataaccess::download::repository::DownloadSeaOrmRepository::DownloadSeaOrmRepository;
+use crawler_domain::port::input::DownloadPort::DownloadPort;
+use crawler_domain::service::DownloadService::DownloadService;
+use crawler_domain::service::YtDlpDownloaderService::YtDlpDownloaderService;
+
+pub fn create_app_state(db: DatabaseConnection, download_dir: String) -> Arc<AppState> {
+    let sea_orm_repo = DownloadSeaOrmRepository::new(db);
+    let download_repository = Arc::new(DownloadRepositoryImpl::new(sea_orm_repo));
+    let video_downloader = Arc::new(YtDlpDownloaderService::new());
+
+    let download_service = Arc::new(DownloadService::new(
+        download_repository,
+        video_downloader,
+        download_dir,
+    )) as Arc<dyn DownloadPort>;
+
+    Arc::new(AppState {
+        download_service,
+    })
+}

@@ -1,0 +1,22 @@
+/target
+**/*.rs.bk
+Cargo.lock
+*.swp
+*.swo
+.env.local
+
+# Downloaded videos
+/downloads/
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
