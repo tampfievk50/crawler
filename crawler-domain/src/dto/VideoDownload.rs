@@ -15,6 +15,8 @@ pub struct VideoDownload {
     pub error_message: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub created_by: Option<Uuid>,
+    pub updated_by: Option<Uuid>,
 }
 
 impl VideoDownload {
@@ -31,6 +33,8 @@ impl VideoDownload {
             error_message: None,
             created_at: now,
             updated_at: now,
+            created_by: None,
+            updated_by: None,
         }
     }
 }

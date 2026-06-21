@@ -9,4 +9,7 @@ pub struct DownloadVideoResponse {
     pub status: String,
     pub message: String,
     pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub created_by: Option<Uuid>,
+    pub updated_by: Option<Uuid>,
 }

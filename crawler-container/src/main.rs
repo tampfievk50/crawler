@@ -9,6 +9,7 @@ use tracing::info;
 use tracing_subscriber::EnvFilter;
 
 use crawler_application::rest::router::DownloadRouter::DownloadRouter;
+use crawler_application::rest::router::UserRouter::UserRouter;
 use crawler_application::config::{AppConfig, DatabaseConfig};
 use migration::{Migrator, MigratorTrait};
 
@@ -45,6 +46,7 @@ async fn main() {
     let app_state = AppConfig::create_app_state(db, download_dir);
 
     let app = DownloadRouter::routes()
+        .merge(UserRouter::routes())
         .layer(TraceLayer::new_for_http())
         .layer(
             CorsLayer::new()

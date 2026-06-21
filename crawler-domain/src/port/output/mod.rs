@@ -2,3 +2,4 @@
 
 pub mod DownloadRepositoryPort;
 pub mod VideoDownloaderPort;
+pub mod UserRepositoryPort;

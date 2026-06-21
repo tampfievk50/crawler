@@ -18,6 +18,8 @@ impl DownloadDataMapper {
             error_message: Set(download.error_message.clone()),
             created_at: Set(download.created_at),
             updated_at: Set(download.updated_at),
+            created_by: Set(download.created_by),
+            updated_by: Set(download.updated_by),
         }
     }
 
@@ -33,6 +35,8 @@ impl DownloadDataMapper {
             error_message: model.error_message.clone(),
             created_at: model.created_at,
             updated_at: model.updated_at,
+            created_by: model.created_by,
+            updated_by: model.updated_by,
         }
     }
 }

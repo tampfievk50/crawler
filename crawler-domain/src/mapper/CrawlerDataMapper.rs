@@ -15,6 +15,9 @@ impl CrawlerDataMapper {
             status: download.status.clone(),
             message: message.to_string(),
             created_at: download.created_at,
+            updated_at: download.updated_at,
+            created_by: download.created_by,
+            updated_by: download.updated_by,
         }
     }
 
@@ -30,6 +33,8 @@ impl CrawlerDataMapper {
             error_message: download.error_message.clone(),
             created_at: download.created_at,
             updated_at: download.updated_at,
+            created_by: download.created_by,
+            updated_by: download.updated_by,
         }
     }
 }
