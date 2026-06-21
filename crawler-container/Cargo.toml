@@ -4,9 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-crawler-domain = { path = "../crawler-domain" }
 crawler-application = { path = "../crawler-application" }
-crawler-dataaccess = { path = "../crawler-dataaccess" }
 migration = { path = "../migration" }
 
 tokio = { workspace = true }

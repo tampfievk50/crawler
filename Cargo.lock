@@ -459,8 +459,6 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "crawler-application",
- "crawler-dataaccess",
- "crawler-domain",
  "dotenvy",
  "migration",
  "sea-orm",
