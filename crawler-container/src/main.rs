@@ -7,13 +7,16 @@ use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 use crawler_application::rest::router::DownloadRouter::DownloadRouter;
 use crawler_application::rest::router::UserRouter::UserRouter;
 use crawler_application::config::{AppConfig, DatabaseConfig};
+use crawler_application::openapi::ApiDoc;
 use migration::{Migrator, MigratorTrait};
 
-#[tokio::main]
+#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
     dotenvy::dotenv().ok();
 
@@ -54,13 +57,18 @@ async fn main() {
                 .allow_methods(Any)
                 .allow_headers(Any),
         )
-        .with_state(app_state);
+        .with_state(app_state)
+        .merge(
+            SwaggerUi::new("/swagger-ui")
+                .url("/api-docs/openapi.json", ApiDoc::openapi()),
+        );
 
     let addr: SocketAddr = format!("{}:{}", host, port)
         .parse()
         .expect("Invalid server address");
 
     info!("🚀 Crawler API server starting on {}", addr);
+    info!("📖 Swagger UI available at http://{}:{}/swagger-ui", host, port);
 
     let listener = tokio::net::TcpListener::bind(addr)
         .await

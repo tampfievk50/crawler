@@ -7,6 +7,8 @@ use tracing::info;
 use uuid::Uuid;
 
 use crawler_domain::dto::DownloadVideoCommand::DownloadVideoCommand;
+#[allow(unused_imports)]
+use crawler_domain::dto::DownloadVideoResponse::DownloadVideoResponse;
 
 use crate::exception::GlobalExceptionHandler::AppError;
 use crate::rest::payload::DownloadVideoPayload::DownloadVideoPayload;
@@ -14,6 +16,17 @@ use crate::rest::response::ApiResponse::ApiResponse;
 
 use crate::state::AppState::AppState;
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/downloads",
+    tag = "Downloads",
+    request_body = DownloadVideoPayload,
+    responses(
+        (status = 200, description = "Download task created", body = DownloadVideoResponse),
+        (status = 400, description = "Invalid request body"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn create_download(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<DownloadVideoPayload>,
@@ -31,6 +44,19 @@ pub async fn create_download(
     Ok(Json(ApiResponse::success(response)))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/downloads/{id}",
+    tag = "Downloads",
+    params(
+        ("id" = Uuid, Path, description = "Download UUID")
+    ),
+    responses(
+        (status = 200, description = "Download found", body = DownloadVideoResponse),
+        (status = 404, description = "Download not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn get_download_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<Uuid>,
@@ -46,6 +72,15 @@ pub async fn get_download_by_id(
     Ok(Json(ApiResponse::success(response)))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/downloads",
+    tag = "Downloads",
+    responses(
+        (status = 200, description = "List of downloads", body = Vec<DownloadVideoResponse>),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn list_downloads(
     State(state): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, AppError> {

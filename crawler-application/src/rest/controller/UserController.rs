@@ -9,6 +9,8 @@ use uuid::Uuid;
 
 use crawler_domain::dto::CreateUserCommand::CreateUserCommand;
 use crawler_domain::dto::UpdateUserCommand::UpdateUserCommand;
+#[allow(unused_imports)]
+use crawler_domain::dto::UserResponse::UserResponse;
 
 use crate::exception::GlobalExceptionHandler::AppError;
 use crate::rest::payload::CreateUserPayload::CreateUserPayload;
@@ -16,6 +18,17 @@ use crate::rest::payload::UpdateUserPayload::UpdateUserPayload;
 use crate::rest::response::ApiResponse::ApiResponse;
 use crate::state::AppState::AppState;
 
+#[utoipa::path(
+    post,
+    path = "/api/v1/users",
+    tag = "Users",
+    request_body = CreateUserPayload,
+    responses(
+        (status = 201, description = "User created successfully", body = UserResponse),
+        (status = 400, description = "Invalid request body"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn create_user(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateUserPayload>,
@@ -34,6 +47,19 @@ pub async fn create_user(
     Ok((StatusCode::CREATED, Json(ApiResponse::success(response))))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/users/{id}",
+    tag = "Users",
+    params(
+        ("id" = Uuid, Path, description = "User UUID")
+    ),
+    responses(
+        (status = 200, description = "User found", body = UserResponse),
+        (status = 404, description = "User not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn get_user_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<Uuid>,
@@ -45,6 +71,15 @@ pub async fn get_user_by_id(
     Ok(Json(ApiResponse::success(response)))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/users",
+    tag = "Users",
+    responses(
+        (status = 200, description = "List of users", body = Vec<UserResponse>),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn list_users(
     State(state): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -55,6 +90,20 @@ pub async fn list_users(
     Ok(Json(ApiResponse::success(response)))
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/users/{id}",
+    tag = "Users",
+    params(
+        ("id" = Uuid, Path, description = "User UUID")
+    ),
+    request_body = UpdateUserPayload,
+    responses(
+        (status = 200, description = "User updated successfully", body = UserResponse),
+        (status = 404, description = "User not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn update_user(
     State(state): State<Arc<AppState>>,
     Path(id): Path<Uuid>,
@@ -74,6 +123,19 @@ pub async fn update_user(
     Ok(Json(ApiResponse::success(response)))
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/users/{id}",
+    tag = "Users",
+    params(
+        ("id" = Uuid, Path, description = "User UUID")
+    ),
+    responses(
+        (status = 204, description = "User deleted successfully"),
+        (status = 404, description = "User not found"),
+        (status = 500, description = "Internal server error"),
+    )
+)]
 pub async fn delete_user(
     State(state): State<Arc<AppState>>,
     Path(id): Path<Uuid>,
